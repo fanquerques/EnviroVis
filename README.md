@@ -1,5 +1,5 @@
-A sample site:
-https://janerubbishtoeat.github.io/EnviroVis/html/homepage.html
+Here is our sample site:
+https://fanquerques.github.io/EnviroVis/html/homepage.html
 
 If can the chatr continues show falures, please use firefox browser and try steps below:
 1: Type "about:config" in the address bar, confirm to continue;
