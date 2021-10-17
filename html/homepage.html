@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnviroVis</title>
+    <link rel="stylesheet" href="../css/hackathon.css">
+    <style>
+        body {
+            background-image: url("../image/ocean.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        h1 {
+            font-family: "Tangerine", serif;
+        }
+
+        p.none {
+            border-style: none;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="w3-center w3-container">
+        <div class=" w3-panel w3-padding-64 w3-padding-large">
+            <h1 style="color:white;font-size:200%;" class="w3-tangerine">
+                Environmental Data  Visualizer - CO2
+            </h1>
+            <script src="../js/model.js"></script>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="w3-center w3-container w3-text-white">
+
+        <p>The COVID-19 pandemic has been a period of change throughout the world. </p>
+        <p>One unexpected outcome that occurred with society going into quarantine was a net reduction in carbon dioxide emissions</p>
+        <p> – this is one of the first periods of time in recorded history when CO2 emissions have declined, </p>
+        <p>and this data can be used to provide further insight to how our “old normal” activities impacted the environment.</p>
+
+    </div>
+
+    <hr>
+
+    <style>
+        #chartdiv {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+
+    <!--Resources -->
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/maps.js"></script>
+    <!--<script src="https://cdn.amcharts.com/lib/4/geodata/worldLow.js"></script>-->
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js "></script>
+
+    <script src="geodata-worldLow.js"></script>
+    <script src="owid-co2-data.json"></script>
+
+    <!-- Chart code -->
+    <script>
+
+            var _Data = $.parseJSON($.ajax({
+                url: "owid-co2-data.json",
+                async: false,
+                dataType: "jsonp"
+            }).responseText);
+            var polygonSeries = null;
+            am4core.ready(function () {
+
+            // Themes begin
+            am4core.useTheme(am4themes_animated);
+            // Themes end
+
+            // Create map instance
+            var chart = am4core.create("chartdiv", am4maps.MapChart);
+
+            // Set map definition
+            chart.geodata = am4geodata_worldLow;
+
+            // Set projection
+            chart.projection = new am4maps.projections.NaturalEarth1();
+            chart.panBehavior = "rotateLong";
+
+            // Create map polygon series
+            polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+
+            // Make map load polygon (like country names) data from GeoJSON
+            polygonSeries.useGeodata = true;
+
+            polygonSeries.mapPolygons.template.fillOpacity = 0.6;
+            polygonSeries.mapPolygons.template.nonScalingStroke = true;
+            polygonSeries.mapPolygons.template.strokeWidth = 0.5;
+            polygonSeries.mapPolygons.template.adapter.add("fill", function (fill, target) {
+                return chart.colors.getIndex(Math.round(Math.random() * 4)).saturate(0.3);
+            })
+
+            // Configure series
+            var polygonTemplate = polygonSeries.mapPolygons.template;
+            polygonTemplate.tooltipText = "{name1}";
+
+            // Create hover state and set alternative fill color
+            var hs = polygonTemplate.states.create("hover");
+            hs.properties.fill = chart.colors.getIndex(1);
+
+            // Center on Pacic
+            chart.deltaLongitude = -154.8;
+
+            var graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
+            graticuleSeries.fitExtent = false;
+
+            function sleep(timeInMillisecond) {
+                return new Promise((resolve) => setTimeout(resolve, timeInMillisecond));
+            }
+            (async function () {
+                while (polygonSeries == null) {
+                    await sleep(3000);
+                } console.log(polygonSeries.data);
+
+                function _Find(str) {
+                    for (var i in _Data._Obj) {
+                        if (str == _Data._Obj[i].name) {
+                            console.log(_Data._Obj[i].name.len);
+                            return i;
+                        }
+                    } return -1;
+                }
+
+                console.log("-----------------II Started--------------------");
+                console.log("polygonSeries II: ", polygonSeries);
+                console.log("polygonSeries II.len: ", polygonSeries.data.length);
+
+                polygonTemplate.events.on("over", function (ev) {
+                    console.log("polygonTemplate II: ", polygonTemplate);
+                    console.log("II.over");
+
+                    console.log("--------------Over event caught!-------------");
+
+                    var country = ev.target.dataItem.dataContext;
+                    var index_Country = _Find(country.name);
+                    console.log("country name: ", country.name);
+                    console.log("indx_Country: ", index_Country);
+                    var index_Year = 0;
+                    for (var i = 0; i < 275; i++) {
+                        if (_Data._Obj[index_Country].data[i].year == 2019) {
+                            index_Year = i;
+                            break;
+                        }
+                    }
+                    console.log("index_Country", index_Country);
+                    var _Co2 = _Data._Obj[index_Country].data[index_Year].co2;
+                    console.log("value: ", _Co2);
+                    ev.target.tooltipText = "{name1}: " + _Co2;
+                    ev.target.adapter.add("fill", function (fill, target) {
+                        if (_Co2 == null) {
+                            return chart.colors.getIndex(Math.round(Math.random() * 4))
+                        }
+                        return chart.colors.getIndex(Math.round(Math.random() * 4)).lighten(-_Co2 / 1000);
+                    })
+
+                })
+
+            })();
+            console.log("I: ", polygonSeries.data);
+            console.log("I.len: ", polygonSeries.data.length);
+            console.log("-----------------I Finished--------------------");
+        })
+    </script>
+
+    <!-- HTML -->
+    <div id="chartdiv"></div>
+    <hr>
+
+
+    <div class="w3-center" style="color: white;">
+        <span onclick="document.getElementById('id01').style.display='block'">
+            <a class="w3-hover-text-orange w3-large w3-button w3-hover-none"><span class="none">learn more</span></a>
+        </span>
+
+        <div id="id01" class="w3-modal">
+            <div class="w3-modal-content">
+                <header class="w3-container w3-teal">
+                    <span onclick="document.getElementById('id01').style.display='none'"
+                          class="w3-button w3-display-topright">&times;</span>
+                    <img src="../image/chart.png" alt="" style="width: 90%; height: 90%;">
+                </header>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- footer -->
+    <div class="w3-center w3-text-white">
+        <footer class ="w3-center">
+            <p>
+                Made with 🤍 by EnviroVis. <br>
+                Copyright © 2021 EnviroVis. All Rights Reserved!
+            </p>
+        </footer>
+    </div>
+
+
+</body>
+</html>
