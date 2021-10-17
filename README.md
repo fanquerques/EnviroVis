@@ -1,4 +1,8 @@
-If can not open, please use firefox browser
+A sample site:
+https://janerubbishtoeat.github.io/EnviroVis/html/homepage.html
+If can not open, please use firefox browser and try steps below:
+1: Type "about:config" in the address bar, confirm to continue;
+2: Search "security.fileuri.strict_origin_policy", then switch the item to "False".
 
 # EnviroVis
 Environmental Data  Visualizer
