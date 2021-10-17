@@ -1,3 +1,5 @@
+If can not open, please use firefox browser
+
 # EnviroVis
 Environmental Data  Visualizer
 ## Inspiration
