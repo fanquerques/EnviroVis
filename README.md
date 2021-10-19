@@ -11,7 +11,7 @@ Environmental Data  Visualizer
 The COVID-19 pandemic has been a period of change throughout the world. One unexpected outcome that occurred with society going into quarantine was a net reduction in carbon dioxide emissions – this is one of the first periods of time in recorded history when CO2 emissions have declined, and this data can be used to provide further insight into how our “old normal” activities impacted the environment.
 
 ## What it does
-Utilizing data sets from Team EnviroVis has developed a novel UX implementation of a data visualizer that highlights and tells the story of how quarantine has impacted our environment. 
+Utilizing data sets from Team EnviroVis has developed a novel UI implementation of a data visualizer that highlights and tells the story of how quarantine has impacted our environment. 
 
 ## How we built it
 Good data is the foundation of a good data visualization, we spend some time first to understand the data set after we found it. Next, we extracted and retrieved the data we need from the database and implement the data into our site with the corresponding UX design. 
@@ -26,4 +26,4 @@ It is a very exciting opportunity for us to learn, explore, and make friends. We
 Managing databases and being able to retrieve data are some valuable data visualization skills that we learned during this hackathon. Moreover, try to approach problems from a different perspective is also something that we have improved during this event.  
 
 ## What's next for Environmental Data  Visualizer
-We want our Environmental Data  Visualizer to predict data from the existing data set, along with the improved UX interface.  Adding some interactive user experience would also be within our consideration. 
+We want our Environmental Data  Visualizer to predict data from the existing data set, along with the improved UI interface.  Adding some interactive user experience would also be within our consideration. 
